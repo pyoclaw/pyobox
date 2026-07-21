@@ -1,0 +1,8 @@
+# pyobox Cargo configuration
+# Build optimizations and tooling
+
+[target.wasm32-unknown-unknown]
+rustflags = ["-C", "target-feature=+atomics,+bulk-memory"]
+
+[env]
+CARGO_NET_RETRY = "2"

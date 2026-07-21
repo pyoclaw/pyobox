@@ -1,7 +1,10 @@
 [package]
 name = "pyobox-facade"
-version = "0.1.0"
-edition = "2021"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+repository.workspace = true
 description = "Public API facade for pyobox"
 
 [dependencies]
@@ -12,3 +15,6 @@ pyobox-agent-context = { path = "../pyobox-agent-context" }
 pyobox-worktree = { path = "../pyobox-worktree" }
 pyobox-services = { path = "../pyobox-services" }
 pyobox-vmm = { path = "../pyobox-vmm" }
+
+[lints]
+workspace = true

@@ -1,21 +1,19 @@
-.PHONY: all setup teardown build test check clean fmt clippy \
-        fork-agent destroy-agent list-agents inject-env \
-        build-templates start-services stop-services \
-        init-submodules update-submodules \
-        generate-configs install-dotfiles install-prompts
+.PHONY: all setup teardown build check test fmt clippy \
+        fork-agent destroy-agent list-agents \
+        generate-configs install-prompts \
+        start-services stop-services \
+        init-submodules update-submodules clean
 
-# ── Top-level ────────────────────────────────────────────────────────────
-
+# ── Top ──
 all: build test
 
 setup:
-	./bootstrap/setup.sh
+	./bootstrap/bootstrap.sh --setup
 
 teardown:
-	./bootstrap/teardown.sh
+	./bootstrap/bootstrap.sh --teardown
 
-# ── Build ────────────────────────────────────────────────────────────────
-
+# ── Build ──
 build:
 	cargo build --workspace
 
@@ -34,19 +32,14 @@ fmt:
 clippy:
 	cargo clippy --workspace -- -D warnings
 
-# ── Test ─────────────────────────────────────────────────────────────────
-
+# ── Test ──
 test:
 	cargo test --workspace
 
 test-bats:
-	@echo "Running Bats integration tests..."
-	./tests/setup.bats
-	./tests/agent-context.bats
-	./tests/services.bats
+	bats tests/*.bats
 
-# ── Agent lifecycle ──────────────────────────────────────────────────────
-
+# ── Agent lifecycle ──
 fork-agent:
 	./scripts/fork-agent-vm.sh $(NAME) $(BRANCH)
 
@@ -56,47 +49,30 @@ destroy-agent:
 list-agents:
 	./scripts/list-agents.sh
 
-inject-env:
-	./scripts/inject-env.sh $(NAME) $(filter-out $@,$(MAKECMDGOALS))
-
-# ── Configuration ────────────────────────────────────────────────────────
-
+# ── Config ──
 generate-configs:
 	./scripts/generate-agent-configs.sh
-
-install-dotfiles:
-	./bootstrap/dotfiles/install.sh
 
 install-prompts:
 	@mkdir -p $(HOME)/.pi/agent/prompts
 	@cp agent-context/prompts/*.md $(HOME)/.pi/agent/prompts/ 2>/dev/null || true
 	@echo "  ✓ Prompt templates installed"
 
-# ── Services ─────────────────────────────────────────────────────────────
-
+# ── Services ──
 start-services:
 	./services/start.sh
 
 stop-services:
 	./services/stop.sh
 
-# ── Templates ────────────────────────────────────────────────────────────
-
-build-templates:
-	./templates/dev/build.sh
-	./templates/dev/warm.sh
-
-# ── Submodules ───────────────────────────────────────────────────────────
-
+# ── Submodules ──
 init-submodules:
-	git submodule init
-	git submodule update --depth 1
+	git submodule update --init --depth 1
 
 update-submodules:
 	git submodule update --remote
 
-# ── Clean ────────────────────────────────────────────────────────────────
-
+# ── Clean ──
 clean:
 	cargo clean
 	rm -rf ../pyobox-worktrees/

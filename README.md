@@ -1,88 +1,117 @@
 # pyobox
 
-> **A polyglot, multiplatform agent-environment box.**
-> Android-first · Web-capable · Desktop-ready
+**Polyglot, multiplatform agent-environment box** — bootstraps reproducible Linux systems, injects agent-aware context into every terminal session, and orchestrates isolated worktrees for AI coding agents.
 
-**pyobox** bootstraps reproducible Linux development environments, injects agent-aware context into every terminal session, and orchestrates isolated worktrees for AI coding agents — powered by Clone VMM for KVM-level isolation on desktop or direct process management on Android/Web.
-
----
-
-## Quick Start
+## Quick start
 
 ```bash
-# Clone + setup
-git clone https://github.com/pyoclaw/pyobox.git
+git clone --recursive https://github.com/pyoclaw/pyobox.git
 cd pyobox
-make setup
-
-# Fork an agent (desktop: KVM VM, android: process)
-make fork-agent NAME=agent-x BRANCH=feature/auth
-
-# Destroy when done
-make destroy-agent NAME=agent-x
-
-# Full teardown
-make teardown
+make setup                    # or: just setup
 ```
 
-## Platform Support
+## What this is
 
-| Platform | Isolation | Env Injection | Agent Context | Shared DB |
-|---|---|---|---|---|
-| **Android** (Termux) | Process | ✅ | ✅ | ✅ minisqlite |
-| **Web** (WASM) | N/A | ✅ (generation) | ✅ (dashboard) | ❌ |
-| **Desktop** (Linux) | Clone KVM VM | ✅ | ✅ | ✅ minisqlite |
+pyobox is an **agent orchestrator**. It gives every CLI agent (Pi, Claude Code, Codex, Gemini) a shared context — worktree, branch, DB URL, session ID — so they cooperate instead of colliding.
+
+### Core ideas
+
+- **Rust core** — safe, fast, cross-compiles to Android (Termux), WASM, and Linux
+- **Bash bootstrap** — zero-dependency setup works everywhere, chicken-and-egg proof
+- **Clone VMM** — pyoclaw/clone submodule, KVM Shadow Clone fork in <20ms (Linux)
+- **Minisqlite** — cursor/minisqlite submodule, SQLite-compatible shared DB
+- **Agent context protocol** — every agent knows its worktree, branch, main repo, and shared services via environment vars
+- **Unsafe-free** — `#![forbid(unsafe_code)]` in all library crates
 
 ## Architecture
 
 ```
-pyobox daemon  ──►  fork agent VM/inject env ──►  agent works in worktree ──►  destroy
-       │                      │                          │
-       └── minisqlite ◄───────┴──── all agents hit same DB
+┌─────────────────────────────────────────────────────────┐
+│                     pyobox-facade                        │
+│              Pyobox::new() → setup/fork/destroy          │
+├──────┬──────┬──────┬──────┬──────┬──────┬──────┬───────┤
+│ types│bootstrap│ env │agent-│work-│server │ vmm │ wasm  │
+│      │        │     │context│ tree│-ices  │     │(web)  │
+└──────┴──────┬──┴─────┴──────┴──────┴──────┴──┬───┴──────┘
+              │                                  │
+         bash scripts                     clone/ + minisqlite/
+    (bootstrap/setup.sh)                   (git submodules)
 ```
 
-See [`docs/architecture.md`](docs/architecture.md) for details.
-
-## Repository Structure
+## Directory layout
 
 ```
 pyobox/
-├── crates/           # Rust workspace (8 crates)
-│   ├── pyobox-types/ # Shared types, config, errors
-│   ├── pyobox-env/   # Environment injection (bash/zsh/fish, WASM-compatible)
-│   ├── pyobox-vmm/   # Clone VMM integration (Linux) / process launch (Android)
-│   └── ...           # bootstrap, agent-context, worktree, services, facade
-├── clone/            # Git submodule — pyoclaw/clone (VMM engine)
-├── minisqlite/       # Git submodule — cursor/minisqlite (shared DB)
-├── bootstrap/        # Shell scripts for system bootstrap
-├── agent-context/    # Agent awareness protocol
-├── services/         # Shared service scripts
-├── scripts/          # Agent lifecycle scripts
-└── docs/             # Documentation
+├── .cargo/config.toml         # Build optimizations
+├── .github/workflows/ci.yml   # CI pipeline
+├── Cargo.toml                 # Rust workspace (8 crates, edition 2024)
+├── Justfile                   # Modern command runner
+├── Makefile                   # Legacy recipes (delegates to just patterns)
+├── bootstrap/
+│   ├── bootstrap.sh           # Unified setup/teardown (platform-aware)
+│   ├── dotfiles/              # zsh, bash, git, starship, herdr configs
+│   ├── env/env.sh             # PYOBOX_* defaults
+│   └── packages/              # termux.sh, apt.sh, cargo.sh
+├── clone/ → pyoclaw/clone     # KVM VMM submodule
+├── minisqlite/ → cursor/…     # SQLite-compatible DB submodule
+├── agent-context/
+│   ├── init.sh / detect.sh    # Env injection + agent detection
+│   ├── prompts/               # 9 agent prompt templates
+│   ├── integrations/           # Pi, Claude, Codex, Herdr settings
+│   ├── workflows/settings.json
+│   └── completions/_pyobox    # Zsh completion
+├── crates/                    # 8 Rust crates
+├── scripts/                   # fork-agent, destroy-agent, list-agents
+├── services/                  # minisqlite start/stop + migrations
+├── docs/                      # architecture.md, environment.md
+├── templates/                 # Clone VM build/warm scripts
+└── tests/                     # bats integration tests
 ```
 
-## Environment Variables
+## Platform tiers
 
-Every managed session gets `PYOBOX_*` variables injected:
+| Tier | Platform | VMM | Status |
+|------|----------|-----|--------|
+| 🥇 | Android (Termux) | Process isolation | ✅ Active |
+| 🥈 | Web (WASM) | N/A (env-only) | ⏳ Planned |
+| 🥉 | Linux (Desktop) | KVM + Clone | ⏳ Planned |
+
+## Agent context protocol
+
+Every managed session exports:
+
+| Variable | Description |
+|----------|-------------|
+| `PYOBOX_ENV=1` | Managed session marker |
+| `PYOBOX_REPO` | Monorepo root |
+| `PYOBOX_BRANCH` | Current git branch |
+| `PYOBOX_MAIN_REPO` | Main repo path |
+| `PYOBOX_WORKTREE_ID` | Worktree ID (if any) |
+| `PYOBOX_DB_URL` | Shared minisqlite URL |
+| `PYOBOX_DB_TYPE=minisqlite` | DB backend |
+| `PYOBOX_SESSION` | Unique session UUID |
+| `PYOBOX_AGENT` | Auto-detected agent name |
+
+## Requirements
+
+- **Rust** 1.85+ (edition 2024)
+- **Git** 2.30+
+- **Platform deps**: see `bootstrap/packages/`
+
+### Optional but recommended
+
+- `just` — fast command runner (`cargo install just`)
+- `eza`, `bat`, `fd`, `rg` — modern CLI tools (installed by bootstrap)
+
+## Development
 
 ```bash
-PYOBOX_ENV=1            # Managed session marker
-PYOBOX_BRANCH=feat/a    # Current git branch (auto-updated)
-PYOBOX_DB_URL=:8543     # Shared minisqlite database
-PYOBOX_REPO=/.../pyobox # Monorepo path
-PYOBOX_WORKTREE_ID=wt-3 # Worktree ID (if applicable)
+cargo check --workspace      # Quick check
+cargo test --workspace       # All tests
+make clippy                  # Lints (deny warnings)
+just build-release           # Optimized build
+./bootstrap/bootstrap.sh --setup   # Full bootstrap
 ```
-
-## Agent Integration
-
-CLI agents automatically know they're in a managed worktree:
-
-| Agent | Config File | Format |
-|---|---|---|
-| Claude Code | `agent-context/integrations/claude/` | JSON |
-| Codex | `agent-context/integrations/codex/` | JSON |
-| Pi | `agent-context/integrations/pi/` | Markdown |
-| Gemini | `agent-context/integrations/gemini/` | Text |
 
 ## License
 

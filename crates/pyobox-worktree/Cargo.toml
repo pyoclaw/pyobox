@@ -1,10 +1,16 @@
 [package]
 name = "pyobox-worktree"
-version = "0.1.0"
-edition = "2021"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+repository.workspace = true
 description = "Git worktree management for agent isolation"
 
 [dependencies]
 pyobox-types = { path = "../pyobox-types" }
-serde = { version = "1", features = ["derive"] }
-anyhow = "1"
+serde.workspace = true
+anyhow.workspace = true
+
+[lints]
+workspace = true
