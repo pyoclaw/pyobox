@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+# Git post-checkout hook — updates PYOBOX_BRANCH after branch switch
+
+if command -v git &>/dev/null; then
+    export PYOBOX_BRANCH="$(git rev-parse --abbrev-ref HEAD)"
+fi

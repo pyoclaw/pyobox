@@ -1,0 +1,3 @@
+{
+  "projectInstructions": "You are in a pyobox-managed environment. Main repo at {{PYOBOX_REPO}}. Shared DB at {{PYOBOX_DB_URL}}. Do not create worktrees. Branch: {{PYOBOX_BRANCH}}. Worktree: {{PYOBOX_WORKTREE_ID}}."
+}

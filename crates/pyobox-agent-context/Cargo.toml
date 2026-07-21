@@ -1,0 +1,10 @@
+[package]
+name = "pyobox-agent-context"
+version = "0.1.0"
+edition = "2021"
+description = "Agent awareness protocol — worktree detection, AGENTS.md, integrations"
+
+[dependencies]
+pyobox-types = { path = "../pyobox-types" }
+serde = { version = "1", features = ["derive"] }
+anyhow = "1"

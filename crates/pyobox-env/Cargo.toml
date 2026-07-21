@@ -1,0 +1,13 @@
+[package]
+name = "pyobox-env"
+version = "0.1.0"
+edition = "2021"
+description = "Environment injection engine — PYOBOX_* vars, shell profiles"
+
+[dependencies]
+pyobox-types = { path = "../pyobox-types" }
+serde = { version = "1", features = ["derive"] }
+anyhow = "1"
+
+[target.'cfg(not(target_arch = "wasm32"))'.dependencies]
+dirs = "6"

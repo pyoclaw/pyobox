@@ -1,0 +1,27 @@
+# pyobox Herdr configuration
+# Place at ~/.config/herdr/config.toml to integrate with Herdr
+
+[keys]
+# Prefix key (ctrl+b by default)
+prefix = "C-b"
+
+[ui]
+# Show agent state sidebar
+show_sidebar = true
+
+[ui.sidebar]
+# Show pyobox agents in the sidebar
+show_agent_state = true
+# Agent detection sources
+detect_agents = true
+
+[terminal]
+# Default shell (zsh if available, else bash)
+shell = "zsh"
+# Inherit environment variables from parent
+inherit_env = true
+extra_env = ["PYOBOX_ENV", "PYOBOX_REPO", "PYOBOX_BRANCH", "PYOBOX_MAIN_REPO"]
+
+[update]
+# Use stable channel
+channel = "stable"

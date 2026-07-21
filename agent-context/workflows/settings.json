@@ -1,0 +1,10 @@
+{
+  "keywordTriggerEnabled": true,
+  "ultracodeEnabled": true,
+  "ultracodeTokenBudget": 100000,
+  "ultracodeMaxAgents": 12,
+  "deepResearchEnabled": true,
+  "standingEffort": "ULTRA",
+  "defaultReviewers": 3,
+  "loopUntilDryMaxRounds": 5
+}

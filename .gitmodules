@@ -1,0 +1,6 @@
+[submodule "minisqlite"]
+	path = minisqlite
+	url = https://github.com/cursor/minisqlite.git
+[submodule "clone"]
+	path = clone
+	url = https://github.com/pyoclaw/clone.git

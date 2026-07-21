@@ -1,0 +1,40 @@
+# pyobox agent settings for Pi
+# Mirrors ~/.pi/agent/settings.json structure
+
+{
+  "theme": "catppuccin-mocha",
+  "defaultProvider": "opencode",
+  "defaultModel": "deepseek-v4-flash-free",
+  "defaultThinkingLevel": "high",
+  "shellCommandPrefix": "shopt -s expand_aliases\neval \"$(grep '^alias ' ~/.zshrc)\"\n",
+  "terminal": {
+    "showTerminalProgress": true,
+    "clearOnShrink": true
+  },
+  "defaultProjectTrust": "always",
+  "enableSkillCommands": true,
+  "hideThinkingBlock": true,
+  "branchSummary": {
+    "reserveTokens": 16384
+  },
+  "compaction": {
+    "enabled": true,
+    "reserveTokens": 16384,
+    "keepRecentTokens": 20000
+  },
+  "enabledModels": [
+    "opencode/deepseek-v4-flash-free",
+    "opencode-zen/gpt-5.4",
+    "opencode-zen/gpt-5.4-pro",
+    "opencode-zen/gpt-5.4-mini",
+    "opencode-zen/gpt-5.4-nano",
+    "opencode-zen/gpt-5.3-codex",
+    "opencode-zen/gemini-3.1-pro",
+    "opencode-zen/gemini-3-pro",
+    "opencode-zen/gemini-3-flash",
+    "opencode-zen/qwen3.6-plus",
+    "opencode-zen/kimi-k2.5",
+    "opencode-zen/kimi-k2",
+    "opencode-zen/kimi-k2-thinking"
+  ]
+}

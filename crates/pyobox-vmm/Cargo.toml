@@ -1,0 +1,13 @@
+[package]
+name = "pyobox-vmm"
+version = "0.1.0"
+edition = "2021"
+description = "Clone VMM integration layer — fork, inject, destroy, template management"
+
+[dependencies]
+pyobox-types = { path = "../pyobox-types" }
+serde = { version = "1", features = ["derive"] }
+anyhow = "1"
+
+[target.'cfg(target_os = "linux")'.dependencies]
+tokio = { version = "1", features = ["process"] }

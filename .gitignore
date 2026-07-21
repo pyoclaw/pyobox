@@ -1,0 +1,10 @@
+target/
+.env
+*.local
+*.bak
+*.orig
+bootstrap/env/local.sh
+.pyobox/worktrees.toml
+*.db
+*.db-wal
+*.db-shm

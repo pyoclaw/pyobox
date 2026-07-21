@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+# Git pre-worktree hook — warns if an agent tries to create a worktree
+# inside a pyobox-managed repo.
+
+if [ -n "${PYOBOX_ENV:-}" ]; then
+    echo "⚠️  This is a pyobox-managed repo. Do not create worktrees manually."
+    echo "   Use: make fork-agent NAME=<name> BRANCH=<branch>"
+    exit 1
+fi

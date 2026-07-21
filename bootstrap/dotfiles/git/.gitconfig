@@ -1,0 +1,13 @@
+[init]
+	defaultBranch = main
+[core]
+	pager = delta
+[delta]
+	side-by-side = true
+	line-numbers = true
+[push]
+	autoSetupRemote = true
+[advice]
+	detachedHead = false
+[url "ssh://git@github.com/"]
+	insteadOf = https://github.com/

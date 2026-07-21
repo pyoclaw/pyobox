@@ -1,0 +1,5 @@
+pyobox environment:
+  repo: $PYOBOX_REPO
+  branch: $PYOBOX_BRANCH
+  db: $PYOBOX_DB_URL
+  worktree: managed — do not create your own

@@ -1,0 +1,10 @@
+[package]
+name = "pyobox-services"
+version = "0.1.0"
+edition = "2021"
+description = "Shared service orchestration — minisqlite, migrations, health checks"
+
+[dependencies]
+pyobox-types = { path = "../pyobox-types" }
+serde = { version = "1", features = ["derive"] }
+anyhow = "1"

@@ -1,0 +1,34 @@
+# mise.toml — Tool version management for pyobox
+# Copy to ~/.config/mise/config.toml or project root
+
+[tools]
+# Rust
+rust = "latest"
+
+# Node.js
+node = "lts"
+
+# Python
+python = "latest"
+
+# Go
+go = "latest"
+
+# Shell tools
+just = "latest"
+eza = "latest"
+bat = "latest"
+fd = "latest"
+ripgrep = "latest"
+fzf = "latest"
+zoxide = "latest"
+delta = "latest"
+duf = "latest"
+procs = "latest"
+hyperfine = "latest"
+watchexec = "latest"
+lazygit = "latest"
+
+# Web
+curlie = "latest"
+tealdeer = "latest"

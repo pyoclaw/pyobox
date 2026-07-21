@@ -1,0 +1,49 @@
+#compdef pyobox
+# Zsh completion for pyobox CLI
+
+_pyobox_commands() {
+    local -a commands
+    commands=(
+        'setup:Run full system bootstrap'
+        'teardown:Clean up everything'
+        'fork-agent:Fork a new agent worktree + VM'
+        'destroy-agent:Destroy an agent worktree + VM'
+        'list-agents:List all active agents'
+        'inject-env:Inject environment variables'
+        'generate-configs:Generate agent integration configs'
+        'build:Build all Rust crates'
+        'test:Run all tests'
+        'help:Show help'
+    )
+    _describe 'command' commands
+}
+
+_pyobox() {
+    local curcontext="$curcontext" state line
+    typeset -A opt_args
+
+    _arguments -C \
+        '1: :->command' \
+        '*: :->args'
+
+    case $state in
+        command)
+            _pyobox_commands
+            ;;
+        args)
+            case $words[1] in
+                fork-agent)
+                    _arguments \
+                        '--name=[Agent name]:name:' \
+                        '--branch=[Git branch]:branch:'
+                    ;;
+                destroy-agent)
+                    _arguments \
+                        '--name=[Agent name]:name:'
+                    ;;
+            esac
+            ;;
+    esac
+}
+
+compdef _pyobox pyobox

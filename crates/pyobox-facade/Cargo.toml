@@ -1,0 +1,14 @@
+[package]
+name = "pyobox-facade"
+version = "0.1.0"
+edition = "2021"
+description = "Public API facade for pyobox"
+
+[dependencies]
+pyobox-types = { path = "../pyobox-types" }
+pyobox-bootstrap = { path = "../pyobox-bootstrap" }
+pyobox-env = { path = "../pyobox-env" }
+pyobox-agent-context = { path = "../pyobox-agent-context" }
+pyobox-worktree = { path = "../pyobox-worktree" }
+pyobox-services = { path = "../pyobox-services" }
+pyobox-vmm = { path = "../pyobox-vmm" }

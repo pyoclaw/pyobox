@@ -1,0 +1,9 @@
+[package]
+name = "pyobox-types"
+version = "0.1.0"
+edition = "2021"
+description = "Shared types, config, and error types for pyobox"
+
+[dependencies]
+serde = { version = "1", features = ["derive"] }
+thiserror = "2"

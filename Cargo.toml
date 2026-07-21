@@ -1,0 +1,12 @@
+[workspace]
+resolver = "2"
+members = [
+    "crates/pyobox-facade",
+    "crates/pyobox-bootstrap",
+    "crates/pyobox-env",
+    "crates/pyobox-agent-context",
+    "crates/pyobox-worktree",
+    "crates/pyobox-services",
+    "crates/pyobox-vmm",
+    "crates/pyobox-types",
+]
